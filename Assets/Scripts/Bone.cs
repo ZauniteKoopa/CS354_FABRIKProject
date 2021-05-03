@@ -56,10 +56,6 @@ public class Bone : MonoBehaviour
 
 
         //Maintain roll of the parent 
-        // float parentRoll = originJoint.parent.eulerAngles.y;       //Assumes that hip bone is straight up
-        // Quaternion rollQuat = Quaternion.AngleAxis(parentRoll, Vector3.up);
-        // originJoint.localRotation *= (rollQuat * Quaternion.AngleAxis(defaultRoll, Vector3.up));
-
         Vector3 testNormal = transform.rotation * transform.TransformVector(localNormal);
         testNormal = transform.InverseTransformVector(testNormal);
         float roll = Vector3.SignedAngle(testNormal, localOrigRot, zeroTangent);

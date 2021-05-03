@@ -60,7 +60,7 @@ public class WalkAnimator : MonoBehaviour
     [SerializeField]
     private Transform bustBone = null;
     [SerializeField]
-    private float MAX_BUST_ROT = 15f;
+    private float MAX_BUST_ROT = 10f;
 
 
     // Start is called before the first frame update
@@ -222,9 +222,9 @@ public class WalkAnimator : MonoBehaviour
     //IK method to be run if person is walking straight or upwards
     private void normal_IK_walk(float progress, Vector3 walkDir)
     {
-        if (progress <= 0.5f)
+        if (progress <= 0.25f)
             updateGround(progress);
-        else
+        else if (progress > 0.5f)
             legLanding = true;
 
         //Get four vectors
@@ -316,7 +316,7 @@ public class WalkAnimator : MonoBehaviour
     private void updateGround(float progress)
     {
         //Set up progress for linear interpolation: body will exert force on ground depending on which leg is on the ground
-        progress *= 2.0f;
+        progress *= 4.0f;
         Vector3 restLegPos = (leftLegUp) ? rightLegEnd.position : leftLegEnd.position;
 
         //Get vectors for linear interpolation
