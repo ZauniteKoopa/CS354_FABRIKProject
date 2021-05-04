@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerPackage : MonoBehaviour
 {
     [SerializeField]
     private float speed = 1.5f;
-    // [SerializeField]
-    // private float rotateSpeed = 2f;
+    [SerializeField]
+    private float rotateSpeed = 5f;
     [SerializeField]
     private WalkAnimator walkAnim = null;
     private bool moving = false;
@@ -21,8 +22,15 @@ public class PlayerPackage : MonoBehaviour
     private LineRenderer laserRender = null;
     [SerializeField]
     private AudioSource laserAudio = null;
+    [SerializeField]
+    private float laserDistance = 50f;
+    [SerializeField]
+    private Text pointText = null;
+    private const float CAMERA_SCREEN_DIST = 150f;
 
-    private const float LOOK_DISTANCE = 10f;
+    private const float LOOK_DISTANCE = 30f;
+
+    private int numPoints = 0;
 
 
     // Start is called before the first frame update
@@ -97,31 +105,23 @@ public class PlayerPackage : MonoBehaviour
     private void cameraMovement()
     {
         //Get movement direction
-        float camHor = Input.GetAxis("CamHorizontal");
         Vector3 dir = Vector3.zero;
+        Vector3 mousePos = Input.mousePosition;
 
-        if (camHor > 0.01 || camHor < -0.01)
+        if (mousePos.x <= CAMERA_SCREEN_DIST)
         {
-            dir += camHor * Vector3.right;
+            dir += Vector3.left;
+        }
+        else if (mousePos.x >= Screen.width - CAMERA_SCREEN_DIST)
+        {
+            dir += Vector3.right;
         }
 
-        //If moving the camera, move the camera
-        // if (dir != Vector3.zero)
-        // {
-        //     dir.Normalize();
-        //     Transform camTransform = Camera.main.transform;
-        //     camTransform.Translate(rotateSpeed * Time.deltaTime * dir);
-        //     Vector3 camForward = transform.position - camTransform.position;
-        //     camForward.y = camTransform.forward.y;
-
-        //     camTransform.forward = camForward;
-        // }
-
-        //Edit the rotation
+        // //Edit the rotation
         if (dir != Vector3.zero)
         {
             Vector3 newEulers = transform.eulerAngles;
-            newEulers.y += (camHor);
+            newEulers.y += (rotateSpeed * Time.deltaTime * dir.x);
             transform.eulerAngles = newEulers;
         }
     }
@@ -132,13 +132,36 @@ public class PlayerPackage : MonoBehaviour
         //Set up line
         Vector3 gunDir = lookTgt.position - gun.position;
         gunDir.Normalize();
-        gunDir *= 50f;
+        gunDir *= laserDistance;
         Vector3 finalPos = lookTgt.position + gunDir;
 
+        //Render the line and play the audio
         laserRender.SetPosition(0, gun.position);
         laserRender.SetPosition(1, finalPos);
         laserRender.enabled = true;
         laserAudio.Play();
+
+        //Check if object hits a target
+        gunDir.Normalize();
+        RaycastHit hit;
+        Ray laserRay = new Ray(gun.position, gunDir);
+
+        //If hit a target, deactivate that target if possible and get a point
+        if (Physics.Raycast(laserRay, out hit, laserDistance))
+        {
+            Target shotTgt = hit.transform.GetComponent<Target>();
+
+            if (shotTgt != null)
+            {
+                bool gainPoint = shotTgt.hitTarget();
+
+                if (gainPoint)
+                {
+                    numPoints++;
+                    pointText.text = "Targets Hit:  " + numPoints;
+                }
+            }
+        }
 
         yield return new WaitForSeconds(0.2f);
 

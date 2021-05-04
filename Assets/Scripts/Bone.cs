@@ -14,7 +14,6 @@ public class Bone : MonoBehaviour
     private float length;
 
     //Default tangent (tangent Direction if Rotation is all (0, 0, 0))
-    //  IMPORTANT: ALL JOINTS MUST HAVE 0 ROTATION BEFORE RUNTIME
     private Vector3 zeroTangent = Vector3.up;
     private float defaultRoll = 0.0f;
     private Vector3 localOrigRot;
@@ -30,12 +29,9 @@ public class Bone : MonoBehaviour
         defaultRoll = originJoint.localEulerAngles.y;
 
         //Obtain the default roll
-        // Quaternion zeroRoll = Quaternion.AngleAxis(0f, destJoint.localPosition);
         Vector3 normal = Vector3.Cross(zeroTangent, Vector3.up).normalized;
         localNormal = transform.InverseTransformVector(normal);
-        localOrigRot = transform.InverseTransformVector(transform.rotation * normal);
-        // Vector3 tester = transform.localRotation * perpendicular;
-        // print(name + ": " + Vector3.SignedAngle(perpendicular, tester, destJoint.localPosition));
+        localOrigRot = transform.localRotation * localNormal;
     }
 
     
@@ -55,12 +51,10 @@ public class Bone : MonoBehaviour
         //testDist = Vector3.Distance(newDestJointPos, destJoint.position);
 
 
-        //Maintain roll of the parent 
-        Vector3 testNormal = transform.rotation * transform.TransformVector(localNormal);
-        testNormal = transform.InverseTransformVector(testNormal);
+        //Maintain constant roll by comparing a testNormal to the original normal
+        Vector3 testNormal = transform.localRotation * localNormal;
         float roll = Vector3.SignedAngle(testNormal, localOrigRot, zeroTangent);
         originJoint.rotation *= Quaternion.AngleAxis(roll, zeroTangent);
-        //print(name + ": " + Vector3.SignedAngle(testNormal, origNormal, zeroTangent));
     }
 
 
