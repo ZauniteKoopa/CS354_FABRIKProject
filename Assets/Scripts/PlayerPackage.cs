@@ -135,12 +135,6 @@ public class PlayerPackage : MonoBehaviour
         gunDir *= laserDistance;
         Vector3 finalPos = lookTgt.position + gunDir;
 
-        //Render the line and play the audio
-        laserRender.SetPosition(0, gun.position);
-        laserRender.SetPosition(1, finalPos);
-        laserRender.enabled = true;
-        laserAudio.Play();
-
         //Check if object hits a target
         gunDir.Normalize();
         RaycastHit hit;
@@ -149,6 +143,7 @@ public class PlayerPackage : MonoBehaviour
         //If hit a target, deactivate that target if possible and get a point
         if (Physics.Raycast(laserRay, out hit, laserDistance))
         {
+            finalPos = hit.point;
             Target shotTgt = hit.transform.GetComponent<Target>();
 
             if (shotTgt != null)
@@ -162,6 +157,12 @@ public class PlayerPackage : MonoBehaviour
                 }
             }
         }
+
+        //Render the line and play the audio
+        laserRender.SetPosition(0, gun.position);
+        laserRender.SetPosition(1, finalPos);
+        laserRender.enabled = true;
+        laserAudio.Play();
 
         yield return new WaitForSeconds(0.2f);
 
