@@ -16,7 +16,7 @@ public class Bone : MonoBehaviour
     //Default tangent (tangent Direction if Rotation is all (0, 0, 0))
     private Vector3 zeroTangent = Vector3.up;
     private float defaultRoll = 0.0f;
-    private Vector3 localOrigRot;
+    private Vector3 localOrigNormal;
     Vector3 localNormal;
 
 
@@ -31,7 +31,7 @@ public class Bone : MonoBehaviour
         //Obtain the default roll
         Vector3 normal = Vector3.Cross(zeroTangent, Vector3.up).normalized;
         localNormal = transform.InverseTransformVector(normal);
-        localOrigRot = transform.localRotation * localNormal;
+        localOrigNormal = transform.localRotation * localNormal;
     }
 
     
@@ -48,12 +48,10 @@ public class Bone : MonoBehaviour
         originJoint.eulerAngles = Vector3.zero;
         zeroTangent = Vector3.Normalize(destJoint.position - originJoint.position);
         originJoint.rotation *= Quaternion.FromToRotation(zeroTangent, tgtDir);
-        //testDist = Vector3.Distance(newDestJointPos, destJoint.position);
-
 
         //Maintain constant roll by comparing a testNormal to the original normal
         Vector3 testNormal = transform.localRotation * localNormal;
-        float roll = Vector3.SignedAngle(testNormal, localOrigRot, zeroTangent);
+        float roll = Vector3.SignedAngle(testNormal, localOrigNormal, zeroTangent);
         originJoint.rotation *= Quaternion.AngleAxis(roll, zeroTangent);
     }
 

@@ -31,6 +31,13 @@ A final project for Computer Graphics CS354 at The University of Texas at Austin
 		Move Mouse - Aim
 		Move mouse to left/right sides - Rotate character
 
+	Potential Bugs:
+
+		- Physic velocity issues where characters will drift uncontrollably (Very rare)
+		- Characters can phase through the floor or walls with no collision (Rare)
+		- When pausing in the middle of walk animations, bone roll could potentially be off
+		- Aiming with the mouse is not precise and can miss.
+
 
 	Additionally, if you go into scene mode in the Unity engine, there is a blue arm with a red end effector and green pole
 	that you can play with by moving around the red ball for different orientations, either with the green ball
