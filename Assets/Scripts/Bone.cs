@@ -50,6 +50,7 @@ public class Bone : MonoBehaviour
         originJoint.rotation *= Quaternion.FromToRotation(zeroTangent, tgtDir);
 
         //Maintain constant roll by comparing a testNormal to the original normal
+        //Vector3 localZeroTangent = transform.InverseTransformVector(zeroTangent);
         Vector3 testNormal = transform.localRotation * localNormal;
         float roll = Vector3.SignedAngle(testNormal, localOrigNormal, zeroTangent);
         originJoint.rotation *= Quaternion.AngleAxis(roll, zeroTangent);
