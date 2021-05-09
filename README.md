@@ -6,6 +6,10 @@ A final project for Computer Graphics CS354 at The University of Texas at Austin
 	NAME:		Anthony Hoang
 	UT EID:		ath2339
 
+	When cloning the repository please clone from the main branch (default)
+	All reports, videos, and documentation can be found in the documentation folder.
+	FABRIK_FinalProject_Demo.mp4 is the video demo that represents the final version.
+
 	TOOLS:
 
 		- Implemented in Unity Version 2019.4.2f1
